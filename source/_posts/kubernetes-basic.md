@@ -2,6 +2,7 @@
 title: kubernetes 基础概念
 date: 2019-02-01 19:18:36
 tags:
+categories: kubernetes
 ---
 
 ## kubenates 网络
