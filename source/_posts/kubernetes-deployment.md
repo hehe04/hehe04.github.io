@@ -29,6 +29,17 @@ Kubeadm会自动生成CA，API servery，client以及其它需要使用到的证
 2. master: kubeadm init
 3. nodes: kubeadm join
 
+### 安装：
+
+配置国内镜像源：
+
+```shell
+cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
+deb http://mirrors.ustc.edu.cn/kubernetes/apt kubernetes-xenial main
+EOF
+```
+
+
 详细启动步骤：
 
 master 节点安装好kubelet, kubeadm, docker等组件后，将kubelet设置为开机启动。
@@ -39,15 +50,8 @@ sudo systemctl enable kubelet
 
 > 此时kubelet是无法启动的，因为相关配置文件信息还没有设置好，可通过查看系统日志了解具体错误信息。
 
-使用 kubeadm 初始化：
 
-```shell
-sudo kubeadm init  --pod-network-cidr 10.244.0.0/16 
-```
-
-> 如果提示 [Error swap]，可以使用 --ignore-preflight-errors 选项忽略相关错误。编辑/etc/sysconfig/kubelet 文件，KUBELET_EXTRA_ARGS="--fail-swap-on=false" 然后加入--ignore-preflight-errors=Swap 选项
-
-出于某些不可描述的原因，可能无法拉取镜像。这里需要暂时设置一下docker 的代理。编辑docker.service文件
+**注意：** 出于某些不可描述的原因，kubeadm 初始化时，可能无法拉取相关镜像。这里需要暂时设置一下docker 的代理。编辑docker.service文件
 
 ```shell
 sudo vim /lib/systemd/system/docker.service
@@ -64,6 +68,32 @@ Environment="HTTPS_PROXY=http://127.0.0.1:1081"
 sudo systemctl daemon-reload 
 sudo systemctl restart docker.service
 ```
+
+使用 kubeadm 初始化：
+
+```shell
+sudo kubeadm init  --pod-network-cidr 10.244.0.0/16 
+```
+
+> 如果提示 [Error swap]，可以使用 --ignore-preflight-errors 选项忽略相关错误。编辑/etc/sysconfig/kubelet 文件，KUBELET_EXTRA_ARGS="--fail-swap-on=false" 然后加入--ignore-preflight-errors=Swap 选项
+
+
+在初始化完成以后，需要复制相关配置文件到当前用户的家目录下，才能以普通用户的身份运行kubectl
+
+```shell
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+部署flannel:
+kubernetes 版本大于1.7时，可直接运行以下命令：
+```shell
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+```
+当flannel部署完成以后，通过 `kubectl get nodes` 命令可以看到，master节点的状态已经变为Ready了。
+
+`kubectl get pods -n kube-system` 命令可以查看所有kube-system 名称空间下的pod 运行情况。
 
 配置node节点：
 
