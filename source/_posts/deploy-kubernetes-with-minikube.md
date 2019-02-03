@@ -2,6 +2,7 @@
 title: 通过minikube 部署kubernetes单节点集群
 date: 2019-02-03 16:11:13
 tags:
+categories: kubernetes
 ---
 
 minikube 是由kubernetes社区提供的一款工具，可以快速的创建一个k8s单节点集群环境。方便大家开发和测试。
@@ -13,7 +14,7 @@ minikube 是由kubernetes社区提供的一款工具，可以快速的创建一�
 ![yq.aliyun.com](https://yqfile.alicdn.com/c03a43e0731ca579d1844fb44269fd2fd257bfb3.jpeg)
 
 ### 安装 kubectl
-首先，需要在本地机器上安装 [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)。如果不能安装请考虑使用其他镜像安装或者参考我的上一篇文章，这里就不在赘述了。
+首先，需要在本地机器上安装 [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)。如果不能安装请考虑使用其他镜像安装或者参考我的上一篇文章，这里就不在赘述了。
 
 {% post_link kubernetes-deployment 点击这里查看 %}
 
@@ -40,7 +41,9 @@ minikube start --registry-mirror=https://registry.docker-cn.com
 ```
 可能需要花一些时间，因为要拉取kubelet、kube-proxy等一些组件的镜像，快慢取决于你的网络情况。
 
-等待安装完成以后，就可以打开Kubernetes控制台,或者使用kubectl 命令行工具来操作kubernetes集群了
+等待安装完成以后，就可以打开Kubernetes控制台,或者使用kubectl 命令行工具来操作kubernetes集群了
+
+>这里有一个坑，如果你开启了代理或者vpn，例如设置了环境变量$https_proxy=http://proxy:port，在启动时可能会出现`timed out waiting to elevate kube-system RBAC privileges: ` 的错误，请关闭代理后重新启动即可。
 
 ```shell
 minikube dashboard
