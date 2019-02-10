@@ -343,7 +343,7 @@
 <p><code>kubectl run</code> 创建并运行一个资源</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run nginx-deploy --image=nginx:1.14-alpine --replicas=2</span><br></pre></td></tr></table></figure>
 <p><code>kubectl port-forward</code> 将一个端口转发到k8s集群内的一个pod上</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 将本地8080端口转发到nginx pod的80端口，从而可以通过127.0.0.1:8080访问nginx</span><br><span class="line">kubectl port-forward nginx 8080:80</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将本地8080端口转发到nginx pod的80端口，从而可以通过127.0.0.1:8080访问nginx</span></span><br><span class="line">kubectl port-forward nginx 8080:80</span><br></pre></td></tr></table></figure>
 <p><code>kubectl expose</code> 暴露一个可访问的service，可通过service名称+端口的方式访问内部pod。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl expose deployment nginx-deploy --name=nginx-server --port=8080 --target-port=80</span><br></pre></td></tr></table></figure>
 <blockquote>

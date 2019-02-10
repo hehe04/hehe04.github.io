@@ -332,45 +332,20 @@
       
         
           
-            <h2 id="K8S-的核心资源对象"><a href="#K8S-的核心资源对象" class="headerlink" title="K8S 的核心资源对象"></a>K8S 的核心资源对象</h2><p>按功能分类：</p>
-<ul>
-<li>workload: Pod, Deployment, ReplicaSet, StatefulSet, DaemonSet, Job, CronJob…</li>
-<li>服务发现： Service, Ingress…</li>
-<li>配置与存储： Volume, CSI<ul>
-<li>ConfigMap, Secret</li>
-<li>DownwardAPI</li>
-</ul>
-</li>
-<li>集群级资源： Namespce, Node, Role, ClusterRole, RoleBinding, ClusterRoleBinding</li>
-<li>元数据型资源: HPA, PodTemplate, LimitRange</li>
-</ul>
-<h2 id="配置清单简介"><a href="#配置清单简介" class="headerlink" title="配置清单简介"></a>配置清单简介</h2><p>创建k8s资源时，可以使用配置清单来完成。api server 仅接受Json 格式的资源定义。用户定义时，使用yaml格式的配置清单。api server 会将其自动转换为Json格式的资源定义。</p>
-<p>大部分资源的yaml 配置清单都包括以下字段：</p>
-<ul>
-<li>apiVersion: 定义了所使用的api 版本，value 的完整形式应该是group/version，可以使用kubectl api-versions查看所有支持的版本。此处忽略了group，则为core group.</li>
-<li>kind: 定义了资源的类别。</li>
-<li>metadata: 定义了资源的元数据信息。<ul>
-<li>name 资源名称</li>
-<li>namespace </li>
-<li>annotations 注解</li>
-<li>labels</li>
-</ul>
-</li>
-<li>spec: 最重要的信息之一， 定义了用户所期望的资源状态。</li>
-<li>status 显示资源的当前状态，应该与spec 一致。</li>
-</ul>
-<p>使用 kubectl get 命令查看资源时，可以指定 <code>-o yaml</code> 参数输出yaml格式的配置清单。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get [type] [name] -o yaml</span><br></pre></td></tr></table></figure>
-<p>输出：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  creationTimestamp: "2019-02-10T08:14:09Z"</span><br><span class="line">  generateName: nginx-deploy-67b97557d5-</span><br><span class="line">  labels:</span><br><span class="line">    pod-template-hash: "2365311381"</span><br><span class="line">    run: nginx-deploy</span><br><span class="line">  name: nginx-deploy-67b97557d5-5b8kt</span><br><span class="line">  namespace: default</span><br><span class="line">  ownerReferences:</span><br><span class="line">  - apiVersion: extensions/v1beta1</span><br><span class="line">    blockOwnerDeletion: true</span><br><span class="line">    controller: true</span><br><span class="line">    kind: ReplicaSet</span><br><span class="line">    name: nginx-deploy-67b97557d5</span><br><span class="line">    uid: d7aff9b7-2d0b-11e9-8d5d-0800270faddc</span><br><span class="line">  resourceVersion: "19270"</span><br><span class="line">  selfLink: /api/v1/namespaces/default/pods/nginx-deploy-67b97557d5-5b8kt</span><br><span class="line">  uid: d7b4f37a-2d0b-11e9-8d5d-0800270faddc</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - image: nginx:1.14-alpine</span><br><span class="line">    imagePullPolicy: IfNotPresent</span><br><span class="line">    name: nginx-deploy</span><br><span class="line">    resources: &#123;&#125;</span><br><span class="line">    terminationMessagePath: /dev/termination-log</span><br><span class="line">    terminationMessagePolicy: File</span><br><span class="line">    volumeMounts:</span><br><span class="line">    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount</span><br><span class="line">      name: default-token-zm9l2</span><br><span class="line">      readOnly: true</span><br><span class="line">  dnsPolicy: ClusterFirst</span><br><span class="line">  nodeName: minikube</span><br><span class="line">  restartPolicy: Always</span><br><span class="line">  schedulerName: default-scheduler</span><br><span class="line">  securityContext: &#123;&#125;</span><br><span class="line">  serviceAccount: default</span><br><span class="line">  serviceAccountName: default</span><br><span class="line">  terminationGracePeriodSeconds: 30</span><br><span class="line">  tolerations:</span><br><span class="line">  - effect: NoExecute</span><br><span class="line">    key: node.kubernetes.io/not-ready</span><br><span class="line">    operator: Exists</span><br><span class="line">    tolerationSeconds: 300</span><br><span class="line">  - effect: NoExecute</span><br><span class="line">    key: node.kubernetes.io/unreachable</span><br><span class="line">    operator: Exists</span><br><span class="line">    tolerationSeconds: 300</span><br><span class="line">  volumes:</span><br><span class="line">  - name: default-token-zm9l2</span><br><span class="line">    secret:</span><br><span class="line">      defaultMode: 420</span><br><span class="line">      secretName: default-token-zm9l2</span><br><span class="line">status:</span><br><span class="line">  conditions:</span><br><span class="line">  - lastProbeTime: null</span><br><span class="line">    lastTransitionTime: "2019-02-10T08:14:09Z"</span><br><span class="line">    status: "True"</span><br><span class="line">    type: Initialized</span><br><span class="line">  - lastProbeTime: null</span><br><span class="line">    lastTransitionTime: "2019-02-10T08:14:27Z"</span><br><span class="line">    status: "True"</span><br><span class="line">    type: Ready</span><br><span class="line">  - lastProbeTime: null</span><br><span class="line">    lastTransitionTime: "2019-02-10T08:14:09Z"</span><br><span class="line">    status: "True"</span><br><span class="line">    type: PodScheduled</span><br><span class="line">  containerStatuses:</span><br><span class="line">  - containerID: docker://508d71cd9b92c4630c2aa8677cd53264dabde784e2e808a0993f7dd17f58c1b2</span><br><span class="line">    image: nginx:1.14-alpine</span><br><span class="line">    imageID: docker-pullable://nginx@sha256:b96aeeb1687703c49096f4969358d44f8520b671da94848309a3ba5be5b4c632</span><br><span class="line">    lastState: &#123;&#125;</span><br><span class="line">    name: nginx-deploy</span><br><span class="line">    ready: true</span><br><span class="line">    restartCount: 0</span><br><span class="line">    state:</span><br><span class="line">      running:</span><br><span class="line">        startedAt: "2019-02-10T08:14:26Z"</span><br><span class="line">  hostIP: 10.0.2.15</span><br><span class="line">  phase: Running</span><br><span class="line">  podIP: 172.17.0.5</span><br><span class="line">  qosClass: BestEffort</span><br><span class="line">  startTime: "2019-02-10T08:14:09Z"</span><br></pre></td></tr></table></figure></p>
-<p>kubectl explain 命令可查看相关节点的文档</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl explain pod</span><br><span class="line">kubectl explain pod.spec</span><br></pre></td></tr></table></figure>
-<h2 id="kubectl-针对配置清单的基本操作"><a href="#kubectl-针对配置清单的基本操作" class="headerlink" title="kubectl 针对配置清单的基本操作"></a>kubectl 针对配置清单的基本操作</h2><p><code>kubectl create -f</code> 通过配置文件创建资源</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f pod_nginx.yml</span><br></pre></td></tr></table></figure>
-<p>用户定义的配置文件示例：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">    image:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="attr">    - containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
-<p><code>kubectl delete -f pod_nginx.yml</code> 通过配置文件删除资源</p>
+          K8S 的核心资源对象按功能分类：
 
-          
+workload: Pod, Deployment, ReplicaSet, StatefulSet, DaemonSet, Job, CronJob…
+服务发现： Service, Ingress…
+配置与存储： Volume, CSI
+ConfigMap, 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/10/k8s-configfile/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -510,26 +485,16 @@
       
         
           
-            <h2 id="什么是Pod"><a href="#什么是Pod" class="headerlink" title="什么是Pod"></a>什么是Pod</h2><p>pod 是k8s的最小调度单位，一个pod中可以包含多个container，同一个pod中的container共享同一个网络名称空间（network namespace），即它们之间可以使用lo 通信。</p>
-<h2 id="kubectl-客户端工具"><a href="#kubectl-客户端工具" class="headerlink" title="kubectl 客户端工具"></a>kubectl 客户端工具</h2><p>kubectl 是一个由官方提供的连接到master节点上api server 的客户端工具。以实现k8s各种资源（Pod、Service、deployment等等）的增删改查基本操作。</p>
-<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><p><code>kubectl cluster-info</code> 查看整个集群的信息</p>
-<p><code>kubectl get pods</code> 列出所有pods</p>
-<p><code>kubectl get pods -o wide</code> 列出所有pods,并包含网络和节点信息</p>
-<p><code>kubectl exec [Pod name]</code> 在pod中执行一个shell命令（同docker exec类似）</p>
-<p><code>kubectl exec -it [Pod name] sh</code> 在pod中以交互模式运行shell（同docker exec类似），当Pod中有多个容器时，默认进入第一个容器。可以使用 <code>-c</code> 选项指定容器。</p>
-<p><code>kubectl describe</code> 显示组件的详细信息，例如显示pod的详细信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl describe pods nginx</span><br></pre></td></tr></table></figure>
-<p><code>kubectl run</code> 创建并运行一个资源</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run nginx-deploy --image=nginx:1.14-alpine --replicas=2</span><br></pre></td></tr></table></figure>
-<p><code>kubectl port-forward</code> 将一个端口转发到k8s集群内的一个pod上</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 将本地8080端口转发到nginx pod的80端口，从而可以通过127.0.0.1:8080访问nginx</span><br><span class="line">kubectl port-forward nginx 8080:80</span><br></pre></td></tr></table></figure>
-<p><code>kubectl expose</code> 暴露一个可访问的service，可通过service名称+端口的方式访问内部pod。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl expose deployment nginx-deploy --name=nginx-server --port=8080 --target-port=80</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>不指定service 的type 时，默认为ClusterIP , 该service 供集群 <strong>内部Pod 客户端</strong> 访问，在集群外部无法访问. 若需要外部访问，需要指定 <code>--type=NodePort</code><br>NodePort Service 即微服务架构中的网关层，可以部署多个，用HA-Proxy 或F5 做负载均衡，以实现高可用。</p>
-</blockquote>
-
-          
+          什么是Podpod 是k8s的最小调度单位，一个pod中可以包含多个container，同一个pod中的container共享同一个网络名称空间（network namespace），即它们之间可以使用lo 通信。
+kubectl 客户端工具kubectl 是一个由官方提供的连接到master节点上
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/03/k8s-basic-operation/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -669,25 +634,17 @@
       
         
           
-            <p>minikube 是由kubernetes社区提供的一款工具，可以快速的创建一个k8s单节点集群环境。方便大家开发和测试。</p>
-<p>官方提供了很详细的文档，但是因为众所周知的原因，在国内无法拉取相关的k8s组件镜像。即使使用科学上网，也有无数的坑。这里，我们直接使用阿里云提供的minikube镜像来安装。</p>
-<p>安装minikube 之前，首先确保你的电脑已经安装了virtualbox。minikube 会创建一个virtualbox 虚拟机，并利用这个虚拟机部署k8s集群。</p>
-<p><img src="https://yqfile.alicdn.com/c03a43e0731ca579d1844fb44269fd2fd257bfb3.jpeg" alt="yq.aliyun.com"></p>
-<h3 id="安装-kubectl"><a href="#安装-kubectl" class="headerlink" title="安装 kubectl"></a>安装 kubectl</h3><p>首先，需要在本地机器上安装 <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank" rel="noopener">kubectl</a>。如果不能安装请考虑使用其他镜像安装或者参考我的上一篇文章，这里就不在赘述了。</p>
-<a href="/2019/02/01/kubernetes-deployment/" title="点击这里查看">点击这里查看</a>
-<h3 id="安装-minikube"><a href="#安装-minikube" class="headerlink" title="安装 minikube"></a>安装 minikube</h3><h4 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -Lo minikube http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v0.30.0/minikube-linux-amd64 &amp;&amp; chmod +x minikube &amp;&amp; sudo mv minikube /usr/local/bin/</span><br></pre></td></tr></table></figure>
-<h4 id="Mac-OSX"><a href="#Mac-OSX" class="headerlink" title="Mac OSX"></a>Mac OSX</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -Lo minikube http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v0.25.2/minikube-darwin-amd64 &amp;&amp; chmod +x minikube &amp;&amp; sudo mv minikube /usr/local/bin/</span><br></pre></td></tr></table></figure>
-<h4 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h4><p>下载 <a href="http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v0.25.2/minikube-windows-amd64.exe?spm=a2c4e.11153940.blogcont221687.29.7dd54cecTB6Vxi&amp;file=minikube-windows-amd64.exe" target="_blank" rel="noopener">minikube-windows-amd64.exe</a> 文件，并重命名为 minikube.exe</p>
-<h3 id="启动-minikube"><a href="#启动-minikube" class="headerlink" title="启动 minikube"></a>启动 minikube</h3><p>注意，一定要添加 <code>--registry-mirror</code> 选项，出于某些不可描述的原因，你懂的。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minikube start --registry-mirror=https://registry.docker-cn.com</span><br></pre></td></tr></table></figure>
-<p>可能需要花一些时间，因为要拉取kubelet、kube-proxy等一些组件的镜像，快慢取决于你的网络情况。</p>
-<p>等待安装完成以后，就可以打开Kubernetes控制台,或者使用kubectl 命令行工具来操作kubernetes集群了</p>
-<blockquote>
-<p>这里有一个坑，如果你开启了代理或者vpn，例如设置了环境变量$https_proxy=<a href="http://proxy:port，在启动时可能会出现`timed" target="_blank" rel="noopener">http://proxy:port，在启动时可能会出现`timed</a> out waiting to elevate kube-system RBAC privileges: ` 的错误，请关闭代理后重新启动即可。</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minikube dashboard</span><br></pre></td></tr></table></figure>
+          minikube 是由kubernetes社区提供的一款工具，可以快速的创建一个k8s单节点集群环境。方便大家开发和测试。
+官方提供了很详细的文档，但是因为众所周知的原因，在国内无法拉取相关的k8s组件镜像。即使使用科学上网，也有无数的坑。这里，我们直接使用阿里云提供的minikube镜像来安装。
 
-          
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/03/deploy-kubernetes-with-minikube/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -827,47 +784,16 @@
       
         
           
-            <h3 id="两种部署方式"><a href="#两种部署方式" class="headerlink" title="两种部署方式"></a>两种部署方式</h3><p><strong>守护进程：</strong> k8s的所有组件都以系统级守护进程的方式运行。该方式部署难度高，所有的组件都必须手动搭建。编辑配置文件等都需要手动进行，部署方式繁琐而复杂。<br>也可以使用ansible 脚本的方式来启动。但是一旦守护进程down掉，必须手动启动。</p>
-<p><strong>kubeadm：</strong> 组件都以pod 的方式运行。master节点上的API server，controller-manager，Scheduler以及node节点上的kube-proxy都以pod的方式运行。这些pod与传统pod不同，都是静态pod。</p>
-<h3 id="使用kubeadm部署"><a href="#使用kubeadm部署" class="headerlink" title="使用kubeadm部署"></a>使用kubeadm部署</h3><p>两个重要子程序</p>
-<ul>
-<li><code>kubeadm init</code> 用于初始化集群</li>
-<li><code>kubeadm join</code> 用于将node 加入集群</li>
-</ul>
-<p><code>/etc/kubernetes/manifests</code> kubernetes会在此路径查找静态Pod的清单文件</p>
-<p>Kubeadm会自动生成CA，API servery，client以及其它需要使用到的证书</p>
-<h3 id="kubeadm-启动步骤"><a href="#kubeadm-启动步骤" class="headerlink" title="kubeadm 启动步骤"></a>kubeadm 启动步骤</h3><p>启动步骤大致分为：</p>
-<ol>
-<li>master, node 安装kubelet, kubeadm, docker</li>
-<li>master: kubeadm init</li>
-<li>nodes: kubeadm join</li>
-</ol>
-<h3 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h3><p>配置国内镜像源：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt; /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line">deb http://mirrors.ustc.edu.cn/kubernetes/apt kubernetes-xenial main</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
-<p>详细启动步骤：</p>
-<p>master 节点安装好kubelet, kubeadm, docker等组件后，将kubelet设置为开机启动。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl enable kubelet</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>此时kubelet是无法启动的，因为相关配置文件信息还没有设置好，可通过查看系统日志了解具体错误信息。</p>
-</blockquote>
-<p><strong>注意：</strong> 出于某些不可描述的原因，kubeadm 初始化时，可能无法拉取相关镜像。这里需要暂时设置一下docker 的代理。编辑docker.service文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /lib/systemd/system/docker.service</span><br></pre></td></tr></table></figure>
-<p>在service节点下添加环境变量<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Environment="HTTPS_PROXY=http://127.0.0.1:1081"</span><br></pre></td></tr></table></figure></p>
-<p>重启docker守护进程：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload </span><br><span class="line">sudo systemctl restart docker.service</span><br></pre></td></tr></table></figure>
-<p>使用 kubeadm 初始化：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo kubeadm init  --pod-network-cidr 10.244.0.0/16</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>如果提示 [Error swap]，可以使用 –ignore-preflight-errors 选项忽略相关错误。编辑/etc/sysconfig/kubelet 文件，KUBELET_EXTRA_ARGS=”–fail-swap-on=false” 然后加入–ignore-preflight-errors=Swap 选项</p>
-</blockquote>
-<p>在初始化完成以后，需要复制相关配置文件到当前用户的家目录下，才能以普通用户的身份运行kubectl</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p $HOME/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure>
-<p>部署flannel:<br>kubernetes 版本大于1.7时，可直接运行以下命令：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span><br></pre></td></tr></table></figure></p>
-<p>当flannel部署完成以后，通过 <code>kubectl get nodes</code> 命令可以看到，master节点的状态已经变为Ready了。</p>
-<p><code>kubectl get pods -n kube-system</code> 命令可以查看所有kube-system 名称空间下的pod 运行情况。</p>
-<p>配置node节点：</p>
-
-          
+          两种部署方式守护进程： k8s的所有组件都以系统级守护进程的方式运行。该方式部署难度高，所有的组件都必须手动搭建。编辑配置文件等都需要手动进行，部署方式繁琐而复杂。也可以使用ansible 脚本的方式来启动。但是一旦守护进程down掉，必须手动启动。
+kubeadm： 组件都以pod 的方式运行。m
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/01/kubernetes-deployment/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -985,17 +911,15 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/01/hello-world/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1135,37 +1059,20 @@
       
         
           
-            <h2 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h2><h3 id="master-node"><a href="#master-node" class="headerlink" title="master/node"></a>master/node</h3><p>Kubenates 主机可以分为master 和node 两种节点, master 节点作为管理者一般为三个,作高可用。node 节点即worker 节点，作为容器的运行者。</p>
-<p>master 节点包含组件：</p>
-<ul>
-<li>API server </li>
-<li>Scheduler 调度器</li>
-<li>Controller-manager 控制器</li>
-</ul>
-<p>node 节点包含：</p>
-<ul>
-<li>kubelet 用于和master 节点的API server 交互</li>
-<li>docker 运行容器</li>
-</ul>
-<h3 id="pod"><a href="#pod" class="headerlink" title="pod"></a>pod</h3><p>K8s的最小调度单位是pod而不是容器，一个pod可以包含多个容器。同一个pod的容器之间共享一个network namespace。一般情况下，一个pod 应只包含一个容器，除非多个容器间有强关联关系。</p>
-<p><strong>label</strong> 是一种kv 格式的数据，用于识别不同的pod。label selector 选择即master 上的label 选择器。</p>
-<h3 id="Pod-控制器"><a href="#Pod-控制器" class="headerlink" title="Pod 控制器"></a>Pod 控制器</h3><p>Pod 我们人为的将其分为两类，自主式pod和控制器管理的pod</p>
-<p>K8s中有很多种控制器以适应不同的应用场景</p>
-<ul>
-<li>ReplicationController</li>
-<li>ReplicaSet</li>
-<li>Deployment 管理无状态的pod</li>
-<li>statefulSet 管理有状态的pod</li>
-<li>DaemonSet</li>
-<li>Job 和 CronJob 任务和定时任务</li>
-</ul>
-<p>其中Deployment 控制器还支持2级控制器HPA，即自动水平伸缩控制器。</p>
-<h2 id="kubenates-网络"><a href="#kubenates-网络" class="headerlink" title="kubenates 网络"></a>kubenates 网络</h2><p>同一个pod内的的多个容器通信：lo<br>不同pod的通信：使用overlay，两个pod之间直接通信，所以k8s集群中pod的ip地址不能重复。<br>pod与service通信</p>
-<h2 id="服务注册与发现"><a href="#服务注册与发现" class="headerlink" title="服务注册与发现"></a>服务注册与发现</h2><h4 id="etcd"><a href="#etcd" class="headerlink" title="etcd"></a>etcd</h4><p>k8s使用etcd作为服务发现数据库。</p>
-<h4 id="kubeproxy"><a href="#kubeproxy" class="headerlink" title="kubeproxy"></a>kubeproxy</h4><p>运行在node上的守护进程，当service 或service 背后的pod改变，即目标地址发生改变时，kubeproxy 会反应到API server。</p>
-<h2 id="CA"><a href="#CA" class="headerlink" title="CA"></a>CA</h2><h2 id="K8S-名称空间"><a href="#K8S-名称空间" class="headerlink" title="K8S 名称空间"></a>K8S 名称空间</h2><p>用于隔离每个Pod。</p>
+          术语master/nodeKubenates 主机可以分为master 和node 两种节点, master 节点作为管理者一般为三个,作高可用。node 节点即worker 节点，作为容器的运行者。
+master 节点包含组件：
 
-          
+API server 
+Scheduler 调度器
+Control
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/01/kubernetes-basic/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
