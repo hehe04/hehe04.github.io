@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="hehe04&#39;s blogs">
 <meta property="og:description" content="K8S 的核心资源对象按功能分类：  workload: Pod, Deployment, ReplicaSet, StatefulSet, DaemonSet, Job, CronJob… 服务发现： Service, Ingress… 配置与存储： Volume, CSI ConfigMap, Secret DownwardAPI   集群级资源： Namespce, Node, Role,">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-10T16:18:27.171Z">
+<meta property="og:updated_time" content="2019-02-14T16:37:18.561Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes 资源清单配置文件">
 <meta name="twitter:description" content="K8S 的核心资源对象按功能分类：  workload: Pod, Deployment, ReplicaSet, StatefulSet, DaemonSet, Job, CronJob… 服务发现： Service, Ingress… 配置与存储： Volume, CSI ConfigMap, Secret DownwardAPI   集群级资源： Namespce, Node, Role,">
@@ -368,6 +368,53 @@
 <p>用户定义的配置文件示例：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">    image:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="attr">    - containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
 <p><code>kubectl delete -f pod_nginx.yml</code> 通过配置文件删除资源</p>
+<h2 id="配置清单中的一些重要字段"><a href="#配置清单中的一些重要字段" class="headerlink" title="配置清单中的一些重要字段"></a>配置清单中的一些重要字段</h2><h3 id="spec"><a href="#spec" class="headerlink" title="spec"></a>spec</h3><p>资源定义，最重要的信息之一， 定义了用户所期望的资源状态。</p>
+<h4 id="spec-restartPolicy"><a href="#spec-restartPolicy" class="headerlink" title="spec.restartPolicy"></a>spec.restartPolicy</h4><p>Pod 的重启策略：可能的值有Always、Never、Onfailure</p>
+<h4 id="spec-containers-imagePullPolicy"><a href="#spec-containers-imagePullPolicy" class="headerlink" title="spec.containers.imagePullPolicy"></a>spec.containers.imagePullPolicy</h4><p>拉取镜像的策略，设置后，Pod 一旦创建该字段就不允许修改了</p>
+<ul>
+<li>Always</li>
+<li>Never</li>
+<li>IfNotPresent</li>
+</ul>
+<blockquote>
+<p> 如果本地使用的镜像版本为latest，该选项应该设置为Always 。因为本地所使用的latest 版本在服务器上并不一定就是latest 。</p>
+</blockquote>
+<h4 id="spec-containers-ports"><a href="#spec-containers-ports" class="headerlink" title="spec.containers.ports"></a>spec.containers.ports</h4><p>暴露端口，与docker 不同的是，该参数仅仅起到一个描述信息的作用，并不能真正的起到暴露端口的作用。可以用name字段为指定的端口起一个名称（可选）。在service 中映射时，可以尝试使用该名称。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">    image:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="attr">    - name:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">      containerPort:</span> <span class="number">80</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">name：</span> <span class="string">https</span></span><br><span class="line"><span class="attr">      containerPort:</span> <span class="number">443</span></span><br></pre></td></tr></table></figure>
+<h4 id="spec-containers-commands"><a href="#spec-containers-commands" class="headerlink" title="spec.containers.commands"></a>spec.containers.commands</h4><p>用于指定pod 运行时所执行的命令，指定该字段，docker镜像Entrypoint 和Cmd 将被忽略。</p>
+<h4 id="spec-conttainers-args"><a href="#spec-conttainers-args" class="headerlink" title="spec.conttainers.args"></a>spec.conttainers.args</h4><p>运行命令所需要的参数，如果指定该字段，会覆盖docker镜像的cmd 字段，但不会覆盖Entrypoint 。变量引用格式<code>$(VAR_NAME)</code>. 使用$$ 来转义（escape）。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Docker field name</th>
+<th style="text-align:left">Kubernetes field name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">The command run by the container</td>
+<td style="text-align:left">Entrypoint</td>
+<td style="text-align:left">command</td>
+</tr>
+<tr>
+<td style="text-align:left">The arguments passed to the command</td>
+<td style="text-align:left">Cmd</td>
+<td style="text-align:left">args</td>
+</tr>
+</tbody>
+</table>
+<h3 id="metadata"><a href="#metadata" class="headerlink" title="metadata"></a>metadata</h3><p>元数据信息</p>
+<h4 id="labels"><a href="#labels" class="headerlink" title="labels"></a>labels</h4><p>每个资源都可以拥有多个标签，反之，一个标签也可以贴在多个资源上。每个标签都可以被资源选择器匹配，从而完成资源选择。</p>
+<p>key：字母，数字，_,-,.<br>value: 可以为空，只能以字母或数字开头结尾，中间可以使用下划线等。</p>
+<p>标签可以在创建时通过配置文件指定，也可以在资源创建后，通过管理工具来管理（添加、删除…）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 为pod 打标签</span><br><span class="line">kubectl label pod [pod_name] key=value</span><br></pre></td></tr></table></figure>
+<p>k8s 的标签选择器：</p>
+<ul>
+<li>等值关系：=, ==, !=</li>
+<li>集合关系：key in (value1,value2…)，key notin (value1,value2…)， key 和 !key</li>
+</ul>
+<h4 id="节点标签"><a href="#节点标签" class="headerlink" title="节点标签"></a>节点标签</h4><p>label 不仅可以用于资源上，也可以打在节点上。当节点拥有标签，在创建资源时，就可以指定资源应该运行在哪个节点上。</p>
 
       
     </div>
@@ -479,7 +526,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -550,7 +597,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#K8S-的核心资源对象"><span class="nav-number">1.</span> <span class="nav-text">K8S 的核心资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置清单简介"><span class="nav-number">2.</span> <span class="nav-text">配置清单简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl-针对配置清单的基本操作"><span class="nav-number">3.</span> <span class="nav-text">kubectl 针对配置清单的基本操作</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#K8S-的核心资源对象"><span class="nav-number">1.</span> <span class="nav-text">K8S 的核心资源对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置清单简介"><span class="nav-number">2.</span> <span class="nav-text">配置清单简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl-针对配置清单的基本操作"><span class="nav-number">3.</span> <span class="nav-text">kubectl 针对配置清单的基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置清单中的一些重要字段"><span class="nav-number">4.</span> <span class="nav-text">配置清单中的一些重要字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spec"><span class="nav-number">4.1.</span> <span class="nav-text">spec</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#spec-restartPolicy"><span class="nav-number">4.1.1.</span> <span class="nav-text">spec.restartPolicy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spec-containers-imagePullPolicy"><span class="nav-number">4.1.2.</span> <span class="nav-text">spec.containers.imagePullPolicy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spec-containers-ports"><span class="nav-number">4.1.3.</span> <span class="nav-text">spec.containers.ports</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spec-containers-commands"><span class="nav-number">4.1.4.</span> <span class="nav-text">spec.containers.commands</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spec-conttainers-args"><span class="nav-number">4.1.5.</span> <span class="nav-text">spec.conttainers.args</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#metadata"><span class="nav-number">4.2.</span> <span class="nav-text">metadata</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#labels"><span class="nav-number">4.2.1.</span> <span class="nav-text">labels</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#节点标签"><span class="nav-number">4.2.2.</span> <span class="nav-text">节点标签</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
