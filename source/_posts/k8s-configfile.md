@@ -157,3 +157,77 @@ spec:
 ```
 
 `kubectl delete -f pod_nginx.yml ` 通过配置文件删除资源
+
+## 配置清单中的一些重要字段
+
+### spec
+
+资源定义，最重要的信息之一， 定义了用户所期望的资源状态。
+
+#### spec.restartPolicy 
+
+Pod 的重启策略：可能的值有Always、Never、Onfailure
+
+#### spec.containers.imagePullPolicy 
+
+拉取镜像的策略，设置后，Pod 一旦创建该字段就不允许修改了
+- Always
+- Never
+- IfNotPresent
+
+>  如果本地使用的镜像版本为latest，该选项应该设置为Always 。因为本地所使用的latest 版本在服务器上并不一定就是latest 。
+
+#### spec.containers.ports
+
+暴露端口，与docker 不同的是，该参数仅仅起到一个描述信息的作用，并不能真正的起到暴露端口的作用。可以用name字段为指定的端口起一个名称（可选）。在service 中映射时，可以尝试使用该名称。
+
+```yaml
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - name: http
+      containerPort: 80
+    - name： https
+      containerPort: 443
+```
+
+#### spec.containers.commands
+
+用于指定pod 运行时所执行的命令，指定该字段，docker镜像Entrypoint 和Cmd 将被忽略。
+
+#### spec.conttainers.args
+
+运行命令所需要的参数，如果指定该字段，会覆盖docker镜像的cmd 字段，但不会覆盖Entrypoint 。变量引用格式`$(VAR_NAME)`. 使用$$ 来转义（escape）。
+
+| Description                         | Docker field name | Kubernetes field name |
+| :---------------------------------- | :---------------- | :-------------------- |
+| The command run by the container    | Entrypoint        | command               |
+| The arguments passed to the command | Cmd               | args                  |
+
+### metadata
+
+元数据信息
+
+#### labels
+
+每个资源都可以拥有多个标签，反之，一个标签也可以贴在多个资源上。每个标签都可以被资源选择器匹配，从而完成资源选择。
+
+key：字母，数字，_,-,.
+value: 可以为空，只能以字母或数字开头结尾，中间可以使用下划线等。
+
+标签可以在创建时通过配置文件指定，也可以在资源创建后，通过管理工具来管理（添加、删除...）
+
+```shell
+# 为pod 打标签
+kubectl label pod [pod_name] key=value
+```
+
+k8s 的标签选择器：
+- 等值关系：=, ==, !=
+- 集合关系：key in (value1,value2...)，key notin (value1,value2...)， key 和 !key
+
+#### 节点标签
+
+label 不仅可以用于资源上，也可以打在节点上。当节点拥有标签，在创建资源时，就可以指定资源应该运行在哪个节点上。
